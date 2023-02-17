@@ -19,14 +19,13 @@ public class MemberRepository {
     }
 
     public Optional<Member> findById(Long id) {
-        return Optional.of(em.find(Member.class, id));
+        return Optional.ofNullable(em.find(Member.class, id));
     }
 
     public Optional<Member> findByName(String name) {
-        Member m = em.createQuery("select m from Member m where m.name = :name", Member.class)
+        return em.createQuery("select m from Member m where m.name = :name", Member.class)
                 .setParameter("name", name)
-                .getSingleResult();
-        return Optional.of(m);
+                .getResultStream().findFirst();
     }
 
     public List<Member> findAll() {

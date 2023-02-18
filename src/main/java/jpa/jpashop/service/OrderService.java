@@ -6,6 +6,7 @@ import jpa.jpashop.domain.Order;
 import jpa.jpashop.domain.OrderItem;
 import jpa.jpashop.domain.item.Item;
 import jpa.jpashop.dto.OrderItemDto;
+import jpa.jpashop.dto.OrderSearchDto;
 import jpa.jpashop.repository.ItemRepository;
 import jpa.jpashop.repository.MemberRepository;
 import jpa.jpashop.repository.OrderRepository;
@@ -63,6 +64,11 @@ public class OrderService {
 
         // JPA의 dirty-checking 덕분에 따로 쿼리를 작성하지 않아도 변경 사항을 반영해줌
         order.cancelOrder();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Order> searchOrder(OrderSearchDto searchCond) {
+        return orderRepository.findBySearchCond(searchCond);
     }
 
 }

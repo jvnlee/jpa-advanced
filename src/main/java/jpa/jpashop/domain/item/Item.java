@@ -41,4 +41,10 @@ public abstract class Item {
         this.stock -= quantity;
     }
 
+    public void update(String name, int price, int stock) {
+        setName(name);
+        setPrice(price);
+        setStock(stock);
+    }
+
 }

@@ -5,6 +5,7 @@ import jpa.jpashop.domain.Member;
 import jpa.jpashop.domain.Order;
 import jpa.jpashop.domain.OrderStatus;
 import jpa.jpashop.domain.item.Book;
+import jpa.jpashop.dto.OrderDto;
 import jpa.jpashop.dto.OrderItemDto;
 import jpa.jpashop.dto.OrderSearchDto;
 import jpa.jpashop.exception.NotEnoughStockException;
@@ -101,9 +102,9 @@ class OrderServiceTest {
         OrderSearchDto searchCond = new OrderSearchDto();
         searchCond.setMemberName("Lee");
 
-        List<Order> result = orderService.searchOrder(searchCond);
+        List<OrderDto> result = orderService.searchOrder(searchCond);
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getMember().getName()).isEqualTo("Lee");
+        assertThat(result.get(0).getMemberName()).isEqualTo("Lee");
         assertThat(result.get(0).getStatus()).isEqualTo(OrderStatus.ORDER);
         assertThat(result.get(0).getTotalPrice()).isEqualTo(44000);
     }
@@ -124,7 +125,7 @@ class OrderServiceTest {
         OrderSearchDto searchCond = new OrderSearchDto();
         searchCond.setOrderStatus(OrderStatus.CANCEL);
 
-        List<Order> result = orderService.searchOrder(searchCond);
+        List<OrderDto> result = orderService.searchOrder(searchCond);
         assertThat(result.size()).isEqualTo(0);
     }
 
@@ -145,9 +146,9 @@ class OrderServiceTest {
         searchCond.setMemberName("Andy");
         searchCond.setOrderStatus(OrderStatus.ORDER);
 
-        List<Order> result = orderService.searchOrder(searchCond);
+        List<OrderDto> result = orderService.searchOrder(searchCond);
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getMember().getName()).isEqualTo("Andy");
+        assertThat(result.get(0).getMemberName()).isEqualTo("Andy");
         assertThat(result.get(0).getStatus()).isEqualTo(OrderStatus.ORDER);
         assertThat(result.get(0).getTotalPrice()).isEqualTo(22000);
     }

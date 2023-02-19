@@ -5,6 +5,7 @@ import jpa.jpashop.domain.Member;
 import jpa.jpashop.domain.Order;
 import jpa.jpashop.domain.OrderItem;
 import jpa.jpashop.domain.item.Item;
+import jpa.jpashop.dto.OrderDto;
 import jpa.jpashop.dto.OrderItemDto;
 import jpa.jpashop.dto.OrderSearchDto;
 import jpa.jpashop.repository.ItemRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,8 +69,12 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Order> searchOrder(OrderSearchDto searchCond) {
-        return orderRepository.findBySearchCond(searchCond);
+    public List<OrderDto> searchOrder(OrderSearchDto searchCond) {
+        List<Order> orderList = orderRepository.findBySearchCond(searchCond);
+        return orderList
+                .stream()
+                .map(o -> new OrderDto(o.getId(), o.getMember().getName(), o.getDelivery().getAddress(), o.getTotalPrice(), o.getOrderDate(), o.getStatus()))
+                .collect(Collectors.toList());
     }
 
 }

@@ -24,4 +24,9 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
+    public void update(String name, Address address) {
+        setName(name);
+        setAddress(address);
+    }
+
 }

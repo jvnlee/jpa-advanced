@@ -48,4 +48,10 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public void updateMember(Long memberId, MemberDto memberDto) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        member.update(memberDto.getName(), memberDto.getAddress());
+    }
+
 }

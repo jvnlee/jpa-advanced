@@ -1,18 +1,18 @@
 package jpa.jpashop.dto;
 
 import jpa.jpashop.domain.Address;
+import jpa.jpashop.domain.Order;
 import jpa.jpashop.domain.OrderStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrderDto {
 
     private Long orderId;
@@ -27,4 +27,18 @@ public class OrderDto {
 
     private OrderStatus status;
 
+    private List<OrderItemDto> orderItems;
+
+    public OrderDto(Order order) {
+        this.orderId = order.getId();
+        this.memberName = order.getMember().getName();
+        this.address = order.getDelivery().getAddress();
+        this.totalPrice = order.getTotalPrice();
+        this.orderDate = order.getOrderDate();
+        this.status = order.getStatus();
+        this.orderItems = order.getOrderItems()
+                .stream()
+                .map(OrderItemDto::new)
+                .collect(toList());
+    }
 }

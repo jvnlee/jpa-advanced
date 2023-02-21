@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class OrderService {
             orderItems.add(orderItem);
         }
 
-        OrderItem[] arr = orderItems.toArray(new OrderItem[0]);
+        OrderItem[] arr = orderItems.toArray(OrderItem[]::new);
 
         // 주문 생성
         Order order = Order.createOrder(member, delivery, arr);
@@ -73,8 +74,8 @@ public class OrderService {
         List<Order> orderList = orderRepository.findBySearchCond(searchCond);
         return orderList
                 .stream()
-                .map(o -> new OrderDto(o.getId(), o.getMember().getName(), o.getDelivery().getAddress(), o.getTotalPrice(), o.getOrderDate(), o.getStatus()))
-                .collect(Collectors.toList());
+                .map(OrderDto::new)
+                .collect(toList());
     }
 
 }

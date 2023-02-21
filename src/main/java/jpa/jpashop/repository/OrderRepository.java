@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static jpa.jpashop.domain.QMember.*;
 import static jpa.jpashop.domain.QOrder.*;
+import static jpa.jpashop.domain.QOrderItem.*;
 
 @Repository
 public class OrderRepository {
@@ -49,9 +50,12 @@ public class OrderRepository {
         }
 
         return queryFactory
-                .select(order)
+                .selectDistinct(order)
                 .from(order)
-                .join(order.member, member)
+                .join(order.member, member).fetchJoin()
+                .join(order.delivery).fetchJoin()
+                .join(order.orderItems, orderItem).fetchJoin()
+                .join(orderItem.item).fetchJoin()
                 .where(builder)
                 .fetch();
     }

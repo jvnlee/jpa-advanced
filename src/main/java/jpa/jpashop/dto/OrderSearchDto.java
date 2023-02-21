@@ -11,4 +11,8 @@ public class OrderSearchDto {
 
     private OrderStatus orderStatus;
 
+    private long offset = 0;
+
+    private long limit = 100;
+
 }

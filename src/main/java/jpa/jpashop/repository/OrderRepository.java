@@ -14,7 +14,6 @@ import java.util.Optional;
 
 import static jpa.jpashop.domain.QMember.*;
 import static jpa.jpashop.domain.QOrder.*;
-import static jpa.jpashop.domain.QOrderItem.*;
 
 @Repository
 public class OrderRepository {
@@ -38,6 +37,8 @@ public class OrderRepository {
     public List<Order> findBySearchCond(OrderSearchDto searchCond) {
         String memberName = searchCond.getMemberName();
         OrderStatus orderStatus = searchCond.getOrderStatus();
+        long limit = searchCond.getLimit();
+        long offset = searchCond.getOffset();
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -54,9 +55,9 @@ public class OrderRepository {
                 .from(order)
                 .join(order.member, member).fetchJoin()
                 .join(order.delivery).fetchJoin()
-                .join(order.orderItems, orderItem).fetchJoin()
-                .join(orderItem.item).fetchJoin()
                 .where(builder)
+                .offset(offset)
+                .limit(limit)
                 .fetch();
     }
 

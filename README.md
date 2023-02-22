@@ -220,3 +220,68 @@ select new jpa.jpashop.dto.OrderDto(...) from Order o ...
 2. DTO 조회 방식 사용
 
 3. Native SQL 또는 Spring JdbcTemplate 사용
+
+&nbsp;
+
+### 7. OSIV 옵션
+
+Open Session In View
+
+과거 Hibernate의 EntityManager를 Session이라 불렀는데 그게 굳어진 것. (Open EntityManager In View 라고 봐도 무방)
+
+영속성 컨텍스트의 생존 범위를 어디까지 할 것인가를 정하는 옵션.
+
+```yaml
+spring:
+  jpa:
+    open-in-view: true
+```
+
+1. true (기본값)
+
+    영속성 컨텍스트가 웹 요청이 들어온 순간부터 응답이 나갈 때까지 유지됨.
+    
+    DB 커넥션 또한 영속성 컨텍스트와 생명주기를 함께하므로 똑같이 유지됨.
+    
+    REST API Controller나 View Template에서도 영속성 컨텍스트가 제공하는 지연 로딩 등의 이점을 누릴 수 있음.
+    
+    그러나 하나의 웹 요청이 DB 커넥션을 너무 오래 유지하기 때문에 커넥션 부족 현상이 발생할 수 있음
+    
+    > 컨트롤러에서 외부 API를 호출하는 로직이 있을 때, 외부 API 처리 시간이 길어지면 그만큼 DB 커넥션 유지 시간이 길어져버림
+
+
+&nbsp;
+
+2. false
+
+    트랜잭션 종료 시 영속성 컨텍스트를 닫고, DB 커넥션도 반환함.
+    
+    보통 Service 계층에서 트랜잭션을 시작하기 때문에 영속성 컨텍스트의 생존 범위가 Service와 Repository라고 보면 됨.
+    
+    지연 로딩이나 영속성 관리는 전부 트랜잭션 범위 안에서 이루어지도록 해야함.
+
+&nbsp;
+
+**OSIV를 끈 상태에서 복잡성 관리**
+
+트랜잭션 범위 밖에 있던 지연 로딩 코드를 Service 계층 안으로 가지고 오면 Service 코드가 너무 복잡해질 수 있음
+
+그런 경우 Service를 2가지 용도로 분리해서 관리하는 것이 좋음 (Command-Query Separation)
+
+> Command Query Separation
+> 
+> Command는 객체의 상태를 변경하는 행위, Query는 객체의 상태를 조회(변경X)하는 행위로 이 둘은 한 곳에서 일어나면 안되고, 기능적으로 분리시켜야 한다는 설계 원칙
+
+가령, OrderService라면
+
+- OrderService: 핵심 비즈니스 로직 유지
+
+- OrderQueryService: REST API나 View Template에 필요한 조회 로직 (읽기 전용 트랜잭션 사용)
+
+&nbsp;
+
+**OSIV 옵션 사용 여부 결정**
+
+- 실시간 트래픽이 많은 서비스는 커넥션 고갈이 발생하면 안되므로 OSIV 비활성화
+
+- ADMIN처럼 트래픽이 많지 않은 곳은 OSIV 활성화

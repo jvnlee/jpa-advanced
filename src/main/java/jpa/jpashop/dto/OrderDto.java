@@ -41,4 +41,12 @@ public class OrderDto {
                 .map(OrderItemDto::new)
                 .collect(toList());
     }
+
+    public OrderDto(Long orderId, String memberName, Address address, LocalDateTime orderDate, OrderStatus status) {
+        this.orderId = orderId;
+        this.memberName = memberName;
+        this.address = address;
+        this.orderDate = orderDate;
+        this.status = status;
+    }
 }

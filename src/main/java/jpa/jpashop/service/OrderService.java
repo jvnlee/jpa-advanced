@@ -71,11 +71,12 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderDto> searchOrder(OrderSearchDto searchCond) {
-        List<Order> orderList = orderRepository.findBySearchCond(searchCond);
-        return orderList
-                .stream()
-                .map(OrderDto::new)
-                .collect(toList());
+//        List<Order> orderList = orderRepository.findBySearchCond(searchCond);
+//        return orderList
+//                .stream()
+//                .map(OrderDto::new)
+//                .collect(toList());
+        return orderRepository.findBySearchCondV2(searchCond);
     }
 
 }
